@@ -25,6 +25,23 @@ class MigrateInOrder extends Command
      */
     public function handle()
     {
-        return 1;
+        $migrations = [
+            '2024_08_16_110537_create_roles_table.php',
+            '0001_01_01_000000_create_users_table.php',
+            '0001_01_01_000001_create_cache_table.php',
+            '0001_01_01_000002_create_jobs_table.php',
+            '2024_08_16_112258_create_books_table.php',
+            '2024_08_16_112309_create_loans_table.php'
+        ];
+
+        foreach($migrations as $migration)
+        {
+           $basePath = 'database/migrations/';          
+           $migrationName = trim($migration);
+           $path = $basePath.$migrationName;
+           $this->call('migrate', [
+            '--path' => $path ,            
+           ]);
+        }
     }
 }

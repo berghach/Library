@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('author');
             $table->year('publish_year');
+            $table->string('image');
             $table->string('genre');
             $table->bigInteger('available_quantity');
             $table->timestamps();

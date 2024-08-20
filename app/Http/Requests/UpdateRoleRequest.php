@@ -11,7 +11,7 @@ class UpdateRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,14 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        if($this->method() == 'PUT'){
+            return [
+                'role_name' => ['required', 'string', 'max:255']
+            ];
+        }else{
+            return [
+                'role_name' => ['sometimes', 'required', 'string', 'max:255']
+            ];
+        }
     }
 }

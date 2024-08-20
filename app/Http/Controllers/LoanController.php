@@ -13,7 +13,8 @@ class LoanController extends Controller
      */
     public function index()
     {
-        //
+        $loans = Loan::all();
+        return view('loans.index', compact('loans'));
     }
 
     /**
@@ -21,7 +22,7 @@ class LoanController extends Controller
      */
     public function create()
     {
-        //
+        return view('loans.create');
     }
 
     /**
@@ -29,7 +30,9 @@ class LoanController extends Controller
      */
     public function store(StoreLoanRequest $request)
     {
-        //
+        Loan::create($request->validated());
+
+        return redirect()->route('loans.index')->with('success', 'Loan created successfully.');
     }
 
     /**
@@ -37,7 +40,7 @@ class LoanController extends Controller
      */
     public function show(Loan $loan)
     {
-        //
+        return view('loans.show', compact('loan'));
     }
 
     /**
@@ -45,7 +48,7 @@ class LoanController extends Controller
      */
     public function edit(Loan $loan)
     {
-        //
+        return view('loans.edit', compact('loan'));
     }
 
     /**
@@ -53,7 +56,25 @@ class LoanController extends Controller
      */
     public function update(UpdateLoanRequest $request, Loan $loan)
     {
-        //
+        $loan->update($request->validated());
+
+        return redirect()->route('loans.index')->with('success', 'Loan updated successfully.');
+    }
+    public function returnBook(Loan $loan)
+    {
+        if (now()->greaterThan($loan->return_date)) {
+
+            $daysLate = now()->diffInDays($loan->return_date);
+    
+            $loan->update([
+                'is_returned' => true,
+                'late_fees' => 5 * $daysLate,
+            ]);
+        } else {
+            $loan->update(['is_returned' => true]);
+        }
+        
+        return redirect()->route('loans.index')->with('success', 'The book is returned');
     }
 
     /**
@@ -61,6 +82,8 @@ class LoanController extends Controller
      */
     public function destroy(Loan $loan)
     {
-        //
+        $loan->delete();
+
+        return redirect()->route('loans.index')->with('success', 'Loan deleted successfully.');
     }
 }

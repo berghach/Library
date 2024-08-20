@@ -11,7 +11,7 @@ class UpdateBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,22 @@ class UpdateBookRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        if($this->method() == 'PUT'){
+            return [
+                'title' => ['required','string','max:255'],
+                'author' => ['required','string','max:255'],
+                'publish_year' => ['required','integer','digits:4','min:1000','max:' . date('Y')],
+                'genre' => ['required','string','max:100'],
+                'available_quantity' => ['required','integer','min:0'],
+            ];
+        }else{
+            return [
+                'title' => ['sometimes', 'required','string','max:255'],
+                'author' => ['sometimes', 'required','string','max:255'],
+                'publish_year' => ['sometimes', 'required','integer','digits:4','min:1000','max:' . date('Y')],
+                'genre' => ['sometimes', 'required','string','max:100'],
+                'available_quantity' => ['sometimes', 'required','integer','min:0'],
+            ];
+        }
     }
 }

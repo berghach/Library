@@ -17,8 +17,10 @@ return new class extends Migration
             $table->dateTime('return_date');
             $table->time('duration');
             $table->boolean('is_returned')->default(false);
-            $table->float('late_fees');
+            $table->float('late_fees')->default(0);
             $table->timestamps();
+            $table->foreignId('user_id')->constrained('users', 'id', 'loan_user_id');
+            $table->foreignId('book_id')->constrained('books', 'id', 'loan_book_id');
         });
     }
 

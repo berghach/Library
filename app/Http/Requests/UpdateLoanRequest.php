@@ -11,7 +11,7 @@ class UpdateLoanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,18 @@ class UpdateLoanRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        if($this->method() == 'PUT'){
+            return [
+                'loan_date' => ['required','date','before_or_equal:return_date'],
+                'return_date' => ['required','date','after_or_equal:loan_date'],
+                'duration' => ['required','integer','min:1'],
+            ];
+        }else{
+            return [
+                'loan_date' => ['sometimes', 'required','date','before_or_equal:return_date'],
+                'return_date' => ['sometimes', 'required','date','after_or_equal:loan_date'],
+                'duration' => ['sometimes', 'required','integer','min:1'],
+            ];    
+        }
     }
 }
