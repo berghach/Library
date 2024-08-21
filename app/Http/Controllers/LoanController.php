@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Loan;
 use App\Http\Requests\StoreLoanRequest;
 use App\Http\Requests\UpdateLoanRequest;
+use App\Models\Book;
+use App\Models\User;
 
 class LoanController extends Controller
 {
@@ -28,9 +30,13 @@ class LoanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLoanRequest $request)
+    public function store(StoreLoanRequest $request, User $user, Book $book)
     {
-        Loan::create($request->validated());
+        $loan = Loan::create($request->validated());
+
+        $loan->user()->associate($user);
+        $loan->book()->associate($book);
+        $loan->save();
 
         return redirect()->route('loans.index')->with('success', 'Loan created successfully.');
     }
