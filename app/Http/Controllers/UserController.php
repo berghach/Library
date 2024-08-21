@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
@@ -27,23 +29,13 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required|string|min:10|max:15|regex:/^[0-9]+$/',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        User::create([
-            'first_name' => $validatedData['first_name'],
-            'last_name' => $validatedData['last_name'],
-            'phone' => $validatedData['phone'],
-            'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']),
-        ]);
+        $role = Role::where('role_name', 'user')->first();
+        $data = $request->validated();
+        $user = User::create($data);
+        $user->role()->associate($role);
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -69,17 +61,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
+         $validatedData = $request->validated();
 
-        $user->update([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => $validatedData['password'] ? bcrypt($validatedData['password']) : $user->password,
-        ]);
+        $user->update($validatedData);
 
         // Redirect to the users index with a success message
         return redirect()->route('users.index')->with('success', 'User updated successfully.');

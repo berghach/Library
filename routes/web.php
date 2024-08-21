@@ -1,13 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RegisterController;
 
-Route::get('/', function () {
-    return view('homepage');
+Route::middleware('auth')->group(function(){
+    Route::get('/', function () {
+        return view('homepage');
+    })->name('home');
+    Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 });
-Route::get('/register', function () {
-    return view('auth.register');
-});
-Route::get('/login', function () {
-    return view('auth.login');
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [RegisterController::class, 'create'])->name('register');
+    Route::post('/register', [RegisterController::class, 'store']);
+    Route::get('/login', [AuthController::class, 'create'])->name('login');
+    Route::post('/login', [AuthController::class, 'store']);
 });
