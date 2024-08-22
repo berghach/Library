@@ -2,7 +2,7 @@
     <section>
         <div id="login-form" class="item-form">
             <h3>Log in</h3>
-            <form method="POST" action="{{}}" id="add-user-form">
+            <form method="POST" action="{{route('login')}}" id="add-user-form">
                 @csrf
                 @method('POST')
                 <label for="email">Email :</label>
@@ -11,6 +11,7 @@
                 <input type="password" min="8" id="password" required>
                 <button type="submit">Sign up</button>
             </form>
+            <a href="{{route('register')}}">Signup</a>
         </div>
     </section>
 </x-guest>
