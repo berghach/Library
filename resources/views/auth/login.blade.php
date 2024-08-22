@@ -9,7 +9,7 @@
                 <input type="email" id="email" required>
                 <label for="password">Password :</label>
                 <input type="password" min="8" id="password" required>
-                <button type="submit">Sign up</button>
+                <button type="submit">Log in</button>
             </form>
             <a href="{{route('register')}}">Signup</a>
         </div>
